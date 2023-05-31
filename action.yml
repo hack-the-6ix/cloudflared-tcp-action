@@ -34,17 +34,13 @@ runs:
       uses: AnimMouse/tool-cache@v1
       with:
         folder_name: cloudflared
-        
-    - name: Sign in to Cloudflare Tunnel client
+      
+    - name: Start Cloudflare Tunnel in the background
+      if: inputs.autostart != 'false'
       shell: bash
       env:
         TUNNEL_SERVICE_TOKEN_ID: ${{ inputs.cloudflare_tunnel_service_token_id }}
         TUNNEL_SERVICE_TOKEN_SECRET: ${{ inputs.cloudflare_tunnel_service_token_secret }}
         cloudflare_tunnel_hostname: ${{ inputs.cloudflare_tunnel_hostname }}
         cloudflare_tunnel_listen: ${{ inputs.cloudflare_tunnel_listen }}
-      run: $GITHUB_ACTION_PATH/scripts/sign-in/Unix-like.sh
-      
-    - name: Start Cloudflare Tunnel in the background
-      if: inputs.autostart != 'false'
-      shell: bash
       run: $GITHUB_ACTION_PATH/scripts/autostart/Linux.sh
