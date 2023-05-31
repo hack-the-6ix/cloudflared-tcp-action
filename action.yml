@@ -4,15 +4,19 @@ branding:
   icon: cloud
   color: orange
 inputs:
-  cloudflare_tunnel_credential:
-    description: Cloudflare Tunnel Credential encoded in base64 (deadbeef-1234-4321-abcd-123456789abc.json)
+  cloudflare_tunnel_service_token_id:
+    description: Cloudflare Tunnel service token ID
     required: true
-  cloudflare_tunnel_configuration:
-    description: Cloudflare Tunnel Configuration encoded in base64 (config.yaml)
+  cloudflare_tunnel_service_token_secret:
+    description: Cloudflare Tunnel service token secret
     required: true
-  cloudflare_tunnel_id:
-    description: Cloudflare Tunnel ID (deadbeef-1234-4321-abcd-123456789abc)
+  cloudflare_tunnel_hostname:
+    description: Cloudflare Tunnel hostname
     required: true
+  cloudflare_tunnel_listen:
+    description: Cloudflare Tunnel listen address
+    required: false
+    default: "127.0.0.1:1234"
   autostart:
     description: Autostart Cloudflare Tunnel in the background
     required: false
@@ -34,9 +38,10 @@ runs:
     - name: Sign in to Cloudflare Tunnel client
       shell: bash
       env:
-        cloudflare_tunnel_credential: ${{ inputs.cloudflare_tunnel_credential }}
-        cloudflare_tunnel_configuration: ${{ inputs.cloudflare_tunnel_configuration }}
-        cloudflare_tunnel_id: ${{ inputs.cloudflare_tunnel_id }}
+        TUNNEL_SERVICE_TOKEN_ID: ${{ inputs.cloudflare_tunnel_service_token_id }}
+        TUNNEL_SERVICE_TOKEN_SECRET: ${{ inputs.cloudflare_tunnel_service_token_secret }}
+        cloudflare_tunnel_hostname: ${{ inputs.cloudflare_tunnel_hostname }}
+        cloudflare_tunnel_listen: ${{ inputs.cloudflare_tunnel_listen }}
       run: $GITHUB_ACTION_PATH/scripts/sign-in/Unix-like.sh
       
     - name: Start Cloudflare Tunnel in the background
