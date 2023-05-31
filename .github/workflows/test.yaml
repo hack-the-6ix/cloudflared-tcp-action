@@ -12,15 +12,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Setup cloudflared using setup-cloudflared
-        uses: AnimMouse/setup-cloudflared@main
+        uses: hack-the-6ix/cloudflared-tcp-action@main
         with:
-          cloudflare_tunnel_credential: ${{ secrets.CLOUDFLARE_TUNNEL_CREDENTIAL }}
-          cloudflare_tunnel_configuration: ${{ secrets.CLOUDFLARE_TUNNEL_CONFIGURATION }}
-          cloudflare_tunnel_id: ${{ secrets.CLOUDFLARE_TUNNEL_ID }}
+          cloudflare_tunnel_service_token_id: ${{ secrets.CLOUDFLARE_TUNNEL_SERVICE_TOKEN_ID }}
+          cloudflare_tunnel_service_token_secret: ${{ secrets.CLOUDFLARE_TUNNEL_SERVICE_TOKEN_SECRET }}
+          cloudflare_tunnel_hostname: "k8sapi-moose.hackthe6ix.com"
           
       - name: Test cloudflared installed by setup-cloudflared using Python HTTP server for 1 minute
-        run: timeout 1m python -m http.server 8080 || true
+        run: curl --proxy socks5://127.0.0.1:1234 https://10.20.0.3:16443 --insecure
         
       - name: Shutdown cloudflared using setup-cloudflared/shutdown
         if: always()
-        uses: AnimMouse/setup-cloudflared/shutdown@main
+        uses: hack-the-6ix/cloudflared-tcp-action/shutdown@main
